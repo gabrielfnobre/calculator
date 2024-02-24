@@ -22,10 +22,10 @@ public class MainCalculator extends JFrame {
 		
 		organizeLayout(); //Método para definir como o layout ficará organizado na tela;
 		
-		setSize(432, 522);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setVisible(true);
+		setSize(432, 522); //Define tamanho da tela
+		setDefaultCloseOperation(EXIT_ON_CLOSE); //Define que a aplicação será encerrada quando o botão de fechar for clicado
+		setLocationRelativeTo(null); //Define que e tela será inicializada no centro da tela do monitor
+		setVisible(true); //Declara a tela e seus elementos como visiveis.
 	}
 	
 	/**@Objetivo

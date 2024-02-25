@@ -7,6 +7,8 @@ import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import br.com.nobrecoder.model.Memory;
+
 /**@Objetivo
  * Essa classe define o display visual para a calculadora.
  * <p><p>
@@ -22,12 +24,12 @@ public class Display extends JPanel {
 	public Display() {
 		setBackground(new Color(46, 49, 50)); //Cor de background do display
 		label.setForeground(Color.WHITE); //Cor do texto do display
-		label.setFont(new Font("courier", Font.PLAIN, 80)); //Familia, estilo e tamanho da fonte do display
+		label.setFont(new Font("courier", Font.PLAIN, 35)); //Familia, estilo e tamanho da fonte do display
 		
-		setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 25)); //Modo como os objetos irão se comportar dentro do container do display, bem como, espaçamento entre o padding de cima e debaixo do display da aplicação.
+		setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10)); //Modo como os objetos irão se comportar dentro do container do display, bem como, espaçamento entre o padding de cima e debaixo do display da aplicação.
 		add(label); //a label foi adicionada ao display...
 		
-		label.setText("1234,56");
+		label.setText(Memory.getInstanceOfMemory().getAtualText());
 	}
 	
 }

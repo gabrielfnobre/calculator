@@ -22,7 +22,7 @@ public class MainCalculator extends JFrame {
 		
 		organizeLayout(); //Método para definir como o layout ficará organizado na tela;
 		
-		setSize(432, 522); //Define tamanho da tela
+		setSize(233, 322); //Define tamanho da tela
 		setDefaultCloseOperation(EXIT_ON_CLOSE); //Define que a aplicação será encerrada quando o botão de fechar for clicado
 		setLocationRelativeTo(null); //Define que e tela será inicializada no centro da tela do monitor
 		setVisible(true); //Declara a tela e seus elementos como visiveis.
@@ -37,7 +37,7 @@ public class MainCalculator extends JFrame {
 		Display display = new Display();
 		Keyboard keyboard = new Keyboard();
 		
-		display.setPreferredSize(new Dimension(233, 120));
+		display.setPreferredSize(new Dimension(233, 60));
 		add(display, BorderLayout.NORTH); //Define que a preferência é que o display se posicione ao norte a partir da borda.
 		add(keyboard, BorderLayout.CENTER); //Define que a preferência é que o telhado da calculadora se posicione no centro a partir da borda.
 	}

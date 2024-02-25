@@ -3,7 +3,10 @@ package br.com.nobrecoder.vision;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 /**@Objetivo
@@ -11,10 +14,13 @@ import javax.swing.JPanel;
  * <p><p>
  * @extends
  * Essa classe extende de JPanel, o que faz com que ela possa receber outros componentes visuais dentro dela e colocá-los dispostos segundo o layout que definirmos.
+ * <p><p>
+ * @implements
+ * Essa classe implementa a interface ActionListener. Essa interface implementa o método actionPerformed, que irá ser chamado quando uma determinada ação for performada. A missão dessa interface é fazer com que a classe atual escute os observers que fizerem determinada ação retornando algum comportamento característico.
  * */
 
 @SuppressWarnings("serial")
-public class Keyboard extends JPanel {
+public class Keyboard extends JPanel implements ActionListener {
 
 	//Cores pré escolhidas...
 	private final Color COLOR_DARK_GRAY = new Color(68, 68, 68);
@@ -27,10 +33,14 @@ public class Keyboard extends JPanel {
 		
 		setLayout(layout); //Definimos que o layout será um GridBagLayout
 		
+		constraint.weightx = 1; //Esse atributo nos ajuda a definir como será o comportamentos do preenchimento dos objetos dentro do grid entre si, quando o valor é "1" significa que independente do tamanho dos objetos entre si, em relação ao eixo "x" todos terão a mesma largura.
+		constraint.weighty = 1; //Igual o exemplo acima, só que em relação ao eixo "y".
+		constraint.fill = GridBagConstraints.BOTH; //O atributo "fill" de um objeto GridBagConstraints faz com que os elementos dentro de um grid ocupem todo o espaço disponível para um grid. Para isso esse atributo deve receber como valor um inteiro que define se o preenchimento deve ser feito em relação ao eixo x, ao y ou para ambos os lados. Para nos ajudar a encontrar o valor, existem constantes em GridBagConstraints que nos ajudam a encontrar esse valor, estamos usando no caso "BOTH" que nos ajuda a encontrar o valor para preencher o GridBagConstraints para ambos os lados.
+		
 		//LINE 01
+		constraint.gridwidth = 3; //Como queremos que o botão AC ocupe a largura de 3 colunas do grid, mudamos o seu gridwidth para "3" em vez do 1, que seria o padrão.
 		addButton("AC", COLOR_DARK_GRAY, constraint, 0, 0); //Estamos usando um método criado por nós mesmo para adicionar os botões, veja mais detalhes abaixo...
-		addButton("+/-", COLOR_DARK_GRAY, constraint, 1, 0); /**@Sobre_posicao_de_constraint: O valor de x define em que linha do GridBagLayout um elemento ficará, o valor y define em que coluna componente ficará.*/
-		addButton("%", COLOR_DARK_GRAY, constraint, 2, 0);
+		constraint.gridwidth = 1; //Após a mudança do botão "AC", temos que voltar o gridwidth para "1", se não todos os demais botões terão também o grid de 3 entre si...
 		addButton("/", COLOR_ORANGE, constraint, 3, 0);
 		
 		//LINE 02
@@ -52,8 +62,9 @@ public class Keyboard extends JPanel {
 		addButton("+", COLOR_ORANGE, constraint, 3, 3);
 		
 		//LINE 05
+		constraint.gridwidth = 2; //Queremos que o botão "0" ocupe 2 colunas...
 		addButton("0", COLOR_LIGTH_GRAY, constraint, 0, 4);
-		addButton("0", COLOR_LIGTH_GRAY, constraint, 1, 4);
+		constraint.gridwidth = 1; //Retornando a largura dos elementos para 1 de novo...
 		addButton(",", COLOR_LIGTH_GRAY, constraint, 2, 4);
 		addButton("=", COLOR_ORANGE, constraint, 3, 4);
 		
@@ -68,7 +79,17 @@ public class Keyboard extends JPanel {
 	private void addButton(String text, Color color, GridBagConstraints constraint, int x, int y) {
 		constraint.gridx = x; //O constraint define uma numeração para a posição de um componente no eixo "x"
 		constraint.gridy = y; //Neste caso define uma numeração para a posição do componente no eixo "y"
-		add(new Button(text, color), constraint); //O método add que JPanel pode receber como parâmetros um componente e em segundo lugar um constraint, que define a posição onde ele está.
+		Button button = new Button(text, color); //Criamos um botão.
+		button.addActionListener(this); //Adicionamos os botões como observer de um ActionListener, ou seja, quando um botão for clicado ele será reconhecido como um observer, e uma ação que foi implementada no método actionPerformed será executada.
+		add(button, constraint); //O método add que JPanel pode receber como parâmetros um componente e em segundo lugar um constraint, que define a posição onde ele ficará no grid. Posição essa que já foi atribuída aos atributos gridx e gridy.
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) { //Implementa uma ação para quando um observer de ActionListener for reconhecido.
+		if(e.getSource() instanceof JButton) { //Valida que somente botões sejam reconhecidos. O método getSource de um ActionEvent retornar o observer que foi origem do evento ActionListener
+			JButton button = (JButton) e.getSource(); //Como o objeto de retorno de um e.getSource só poderá ser um JButton, nesse caso atribuímos ele devolta a uma nova instancia de JButton para poder capturar o texto que está nele...
+			System.out.println(button.getText());
+		}
 	}
 	
 }

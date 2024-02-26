@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import br.com.nobrecoder.model.Memory;
+
 /**@Objetivo
  * Essa classe define o estilo do teclado da calculadora, como os botões ficarão dispostos no teclado.
  * <p><p>
@@ -88,7 +90,7 @@ public class Keyboard extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) { //Implementa uma ação para quando um observer de ActionListener for reconhecido.
 		if(e.getSource() instanceof JButton) { //Valida que somente botões sejam reconhecidos. O método getSource de um ActionEvent retornar o observer que foi origem do evento ActionListener
 			JButton button = (JButton) e.getSource(); //Como o objeto de retorno de um e.getSource só poderá ser um JButton, nesse caso atribuímos ele devolta a uma nova instancia de JButton para poder capturar o texto que está nele...
-			System.out.println(button.getText());
+			Memory.getInstanceOfMemory().processCalc(button.getText()); //Chama o método que processa os calculos na memória da calculadora passando o valor do botão.
 		}
 	}
 	

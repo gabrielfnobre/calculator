@@ -17,9 +17,9 @@ public class Memory {
 	private static final Memory INSTANCE_OF_MEMORY = new Memory(); //Aqui temos o objeto estático único da classe, por ser privado, só poderá ser chamado de forma estática.
 	private final List<ObserverMemory> observers = new ArrayList<>(); //Nesta lista serão armazenados todos os observers interessados em saber quando um botão foi clicado e que tipo de botão foi clicado.
 	private String atualText = ""; //Note que o texto atual por ser dinamico poderá ser chamado por através de um getter a partir da instancia de Memory.
-	private String bufferText = "";
-	private boolean replaceDisplay = false;
-	private TypeCommand lastOperator = null; 
+	private String bufferText = ""; //Essa variável será utilizada para armazenar valores operados que devem ser guardados para o calculo seja feito.
+	private boolean replaceDisplay = false; //Essa variável booleana será usada para mostrar quando o display deverá ser limpo para que um próximo número entre no calculo em andamento.
+	private TypeCommand lastOperator = null; //Essa variável irá armazenar o tipo de comando (enum) que está sendo operado. 
 	
 	private Memory() {} //Constructor é privado, isso que faz o padrão Singleton acontecer, pois o constructor nunca poderá ser chamado fora da classe.
 	
@@ -45,35 +45,40 @@ public class Memory {
 		
 		TypeCommand typeCommand = detectComand(value); //Recebe o tipo de botão, que é identificado pela enum acima, por através do método "detectComand", que faz um filtro dos valores passados para identificar qual é o tipo de botão correto.
 		
-		if(typeCommand == null) {
+		//Abaixo temos um laço else if que avalia que tipo de tecla foi acionada pelo usuário, de acordo com o tipo de tecla, uma determinada operação deverá ser feita.
+		if(typeCommand == null) { //Se estiver nulo, é por que nenhuma operação deverá ser feita...
 			return;
-		} else if(typeCommand == TypeCommand.TO_ZERO) {
+		} else if(typeCommand == TypeCommand.TO_ZERO) { //Se for o "AC" que contém o tipo de comando para "zerar" a calculadora...
 			atualText = "";
 			bufferText = "";
 			replaceDisplay = false;
 			lastOperator = null;
-		} else if(typeCommand == TypeCommand.NUMBER || typeCommand == TypeCommand.COMMA) {
+		} else if(typeCommand == TypeCommand.NUMBER || typeCommand == TypeCommand.COMMA) { //se o tipo de comando for um número ou vírgula...
 			atualText = replaceDisplay ? value : atualText + value;
 			replaceDisplay = false;
-		} else {
-			replaceDisplay = true;
-			atualText = getResultOfOperation();
-			bufferText = atualText;
-			lastOperator = typeCommand;
+		} else { //se o tipo de comando for uma operação + - * / ou =...
+			replaceDisplay = true; //Para limpar o display na próxima operação
+			atualText = getResultOfOperation(); //chama o método que irá operar os valores...
+			bufferText = atualText; //Armazena a operação no buffer...
+			lastOperator = typeCommand; //Passa a operação para a variável "lastOperator" identificar qual foi a última operação feita...
 		}
 		
 		observers.forEach(o -> o.alteredValue(getAtualText())); //Avisa todos os observadores que o botão foi clicado e o valor do display deverá ser alterado.
 	}
 
+	/**@Objetivo
+	 * 	Esse método é utilizado para identificar qual é o tipo de operação que deverá ser feita na calculadora e devolver o valor operado...
+	 * */
 	private String getResultOfOperation() {
-		if(lastOperator == null) {
+		if(lastOperator == null) { //Se nenhuma operação foi acionada, devolve somente o último número armazenado...
 			return atualText;
 		}
 		
-		double bufferNumber = Double.parseDouble(bufferText.replace(",", "."));
-		double atualNumber = Double.parseDouble(atualText.replace(",", "."));
-		double result = 0;
+		double bufferNumber = Double.parseDouble(bufferText.replace(",", ".")); //Troca a "," do valor do buffer por "." e transforma em double...
+		double atualNumber = Double.parseDouble(atualText.replace(",", ".")); //Troca a "," do valor do número atual por "." e transforma em double...
+		double result = 0; //Variável que armazenará o resultado final...
 		
+		//Confere qual é o tipo de operação e opera o valor do buffer contra o valor atual coletado...
 		if(lastOperator == TypeCommand.SUM) {
 			result = bufferNumber + atualNumber;
 		} else if(lastOperator == TypeCommand.SUB) {
@@ -84,9 +89,9 @@ public class Memory {
 			result = bufferNumber / atualNumber;
 		}
 		
-		String stringResult = Double.toString(result).replace(".", ",");
-		boolean integer = stringResult.endsWith(",0");
-		return integer ? stringResult.replace(",0", "") : stringResult;
+		String stringResult = Double.toString(result).replace(".", ","); //Transforma o valor coletado no resultado de double para string devolta devolvendo a vírgula no lugar do ponto...
+		boolean integer = stringResult.endsWith(",0"); //Para conferência se o valor termina com ",0", para eliminar o ",0" da calculadora.
+		return integer ? stringResult.replace(",0", "") : stringResult; //Confere se o número pode ser um interger, se sim, elimina o ",0", se não devolve o número com ponto decimal, normalmente.
 	}
 
 	/**@Objetivo
